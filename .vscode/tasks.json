@@ -1,0 +1,60 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Hello World",
+      "type": "shell",
+      "command": "west",
+      "args": [
+        "build",
+        "-p", "auto",
+        "-b", "${input:board_name}",
+        "-d", "${BUILD_DIR}/${input:board_name}/hello_world",
+        "${workspaceFolder}/zephyr/samples/hello_world",
+      ]
+    },
+    {
+      "label": "Build Home Mesh (ESP32)",
+      "type": "shell",
+      "command": "west",
+      "args": [
+        "build",
+        "-p", "auto",
+        "-b", "esp32_devkit_v1",
+        "-d", "${BUILD_DIR}/esp32_devkit_v1/home_mesh",
+        "${workspaceFolder}/home_mesh_app",
+        "--",
+        "-DBOARD_ROOT=${workspaceFolder}/home_mesh_app"
+      ]
+    }
+  ],
+  "options":{
+    "env": {
+      "PATH": "${env:PATH}",
+      "BUILD_DIR": "${workspaceFolder}/output/",
+      "ZEPHYR_TOOLCHAIN_VARIANT": "espressif",
+      "ESPRESSIF_TOOLCHAIN_PATH": "${env:HOME}/.espressif/tools/zephyr",
+    }
+  },
+  "inputs": [
+    {
+      "id": "board_name",
+      "type": "promptString",
+      "description": "보드이름"
+    }
+  ],
+  "problemMatcher": {
+    "owner": "cpp",
+    "fileLocation": ["autoDetect", "${cwd}"],
+    "pattern": {
+        "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "severity": 4,
+        "message": 5
+    }
+  }
+}

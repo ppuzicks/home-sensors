@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: MIT
+
+config BOARD_ESP32_DEVKIT_V1
+  bool "ESP32 DEVKIT V1 Board"
+  depends on SOC_ESP32

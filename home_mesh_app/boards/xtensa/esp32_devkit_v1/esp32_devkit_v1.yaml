@@ -1,0 +1,14 @@
+identifier: esp32_devkit_v1
+name: ESP32 DEVKIT V1
+type: mcu
+arch: xtensa
+toolchain:
+  - espressif
+supported:
+  - gpio
+  - i2c
+  - spi
+  - watchdog
+  - uart
+  - pinmux
+  - nvs
