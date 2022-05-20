@@ -73,7 +73,6 @@
 &spi2 {
 	#address-cells = <1>;
 	#size-cells = <0>;
-	status = "okay";
 	miso-pin = <12>;
 	mosi-pin = <13>;
 	sclk-pin = <14>;
