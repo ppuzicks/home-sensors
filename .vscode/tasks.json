@@ -16,6 +16,48 @@
       ]
     },
     {
+      "label": "Build IPSP (nRF52)",
+      "type": "shell",
+      "command": "west",
+      "args": [
+        "build",
+        "-p", "auto",
+        "-b", "nrf52dk_nrf52832",
+        "-d", "${BUILD_DIR}/nrf52dk_nrf52832/ipsp",
+        "${workspaceFolder}/zephyr/samples/bluetooth/ipsp",
+        "--",
+        "-DBOARD_ROOT=${workspaceFolder}/home_mesh_app"
+      ]
+    },    
+    {
+      "label": "Build IPSP (ESP32)",
+      "type": "shell",
+      "command": "west",
+      "args": [
+        "build",
+        "-p", "auto",
+        "-b", "esp32_devkit_v1",
+        "-d", "${BUILD_DIR}/esp32_devkit_v1/ipsp",
+        "${workspaceFolder}/zephyr/samples/bluetooth/ipsp",
+        "--",
+        "-DBOARD_ROOT=${workspaceFolder}/home_mesh_app"
+      ]
+    },      
+    {
+      "label": "Build BT Beacon (ESP32)",
+      "type": "shell",
+      "command": "west",
+      "args": [
+        "build",
+        "-p", "auto",
+        "-b", "esp32_devkit_v1",
+        "-d", "${BUILD_DIR}/esp32_devkit_v1/beacon",
+        "${workspaceFolder}/zephyr/samples/bluetooth/beacon",
+        "--",
+        "-DBOARD_ROOT=${workspaceFolder}/home_mesh_app"
+      ]
+    },    
+    {
       "label": "Build Home Mesh (ESP32)",
       "type": "shell",
       "command": "west",
@@ -26,16 +68,52 @@
         "-d", "${BUILD_DIR}/esp32_devkit_v1/home_mesh",
         "${workspaceFolder}/home_mesh_app",
         "--",
-        "-DBOARD_ROOT=${workspaceFolder}/home_mesh_app"
+        "-DBOARD_ROOT=${workspaceFolder}/home_mesh_app",
+        /*"-DDTC_OVERLAY_FILE=${workspaceFolder}/home_mesh_app/display.overlay"*/
       ]
+    },
+    {
+      "label": "Compile MCUboot (ESP32)",
+      "type": "shell",
+      "options": {
+        "cwd": "bootloader/mcuboot/boot/espressif",
+      },
+      "command": "ninja",
+      "args":[
+        "-C",
+        "${BUILD_DIR}/esp32_devkit_v1/mcuboot",
+        "flash"
+      ]
+    },
+    {
+      "label": "Configure MCUboot (ESP32)",
+      "type": "shell",
+      "options": {
+        "cwd": "bootloader/mcuboot/boot/espressif",
+      },
+      "command": "cmake",
+      "args":[
+        "-DCMAKE_TOOLCHAIN_FILE=${ESPRESSIF_MCUBOOT_PATH}/tools/toolchain-esp32.cmake",
+        "-DMCUBOOT_TARGET=esp32",
+        "-DMCUBOOT_FLASH_PORT=/dev/tty.usbserial-0001",
+        "-B", "${BUILD_DIR}/esp32_devkit_v1/mcuboot",
+        "-GNinja"
+      ]
+    },
+    {
+      "label": "Build MCUboot (ESP32)",
+      "dependsOrder": "sequence",
+      "dependsOn":["Configure MCUboot (ESP32)", "Compile MCUboot (ESP32)"]
     }
   ],
   "options":{
     "env": {
-      "PATH": "${env:PATH}",
+      "PATH": "${env:PATH}:${env:HOME}/.espressif/tools/zephyr/xtensa-esp32-elf/bin/",
       "BUILD_DIR": "${workspaceFolder}/output/",
+      /*"ZEPHYR_TOOLCHAIN_VARIANT": "zephyr"*/
       "ZEPHYR_TOOLCHAIN_VARIANT": "espressif",
       "ESPRESSIF_TOOLCHAIN_PATH": "${env:HOME}/.espressif/tools/zephyr",
+      "ESPRESSIF_MCUBOOT_PATH": "${workspaceFolder}/bootloader/mcuboot/boot/espressif"
     }
   },
   "inputs": [

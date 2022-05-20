@@ -10,7 +10,20 @@
 LOG_MODULE_REGISTER(home_mesh, CONFIG_LOG_DEFAULT_LEVEL);
 
 
+#include "sys_handler.h"
+#include "bt_le.h"
+#include "display_test.h"
+
+
 void main(void) {
   LOG_DBG("Home Mesh");
 
+
+  le_init();
+
+
+  while (1) {
+    sys_evt_handler();
+    k_yield();
+  }
 }
